@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29911.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElmaStateAnalyzer", "ElmaStateAnalyzer\ElmaStateAnalyzer.csproj", "{352FF3B7-AFB7-4686-B8D5-622AF34FF952}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElmaStateEditor", "ElmaStateEditor\ElmaStateEditor.csproj", "{FDF6997B-C9C8-404C-BB48-A6CCD0859A6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elma", "Elma\Elma.csproj", "{64EB094F-5F37-4A1A-8232-AE017D5780E5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{352FF3B7-AFB7-4686-B8D5-622AF34FF952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{352FF3B7-AFB7-4686-B8D5-622AF34FF952}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{352FF3B7-AFB7-4686-B8D5-622AF34FF952}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{352FF3B7-AFB7-4686-B8D5-622AF34FF952}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDF6997B-C9C8-404C-BB48-A6CCD0859A6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDF6997B-C9C8-404C-BB48-A6CCD0859A6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDF6997B-C9C8-404C-BB48-A6CCD0859A6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDF6997B-C9C8-404C-BB48-A6CCD0859A6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64EB094F-5F37-4A1A-8232-AE017D5780E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64EB094F-5F37-4A1A-8232-AE017D5780E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64EB094F-5F37-4A1A-8232-AE017D5780E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64EB094F-5F37-4A1A-8232-AE017D5780E5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2D96D2AE-3231-4703-9776-1A54AD252500}
+	EndGlobalSection
+EndGlobal
