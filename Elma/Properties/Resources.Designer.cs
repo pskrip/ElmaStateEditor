@@ -71,50 +71,7 @@ namespace Elma.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warm Up
-        ///Flat Track
-        ///Twin Peaks
-        ///Over and Under
-        ///Uphill Battle
-        ///Long Haul
-        ///Hi Flyer
-        ///Tag
-        ///Tunnel Terror
-        ///The Steppes
-        ///Gravity Ride
-        ///Islands in the Sky
-        ///Hill Legend
-        ///Loop-de-Loop
-        ///Serpents Tale
-        ///New Wave
-        ///Labyrinth
-        ///Spiral
-        ///Turnaround
-        ///Upside Down
-        ///Hangman
-        ///Slalom
-        ///Quick Round
-        ///Ramp Frenzy
-        ///Precarious
-        ///Circuitous
-        ///Shelf Life
-        ///Bounce Back
-        ///Headbanger
-        ///Pipe
-        ///Animal Farm
-        ///Steep Corner
-        ///Zig-Zag
-        ///Bumpy Journey
-        ///Labyrinth Pro
-        ///Fruit in the Den
-        ///Jaws
-        ///Curvaceous
-        ///Haircut
-        ///Double Trouble
-        ///Framework
-        ///Enduro
-        ///He He
-        ///F [rest of string was truncated]&quot;;.
+        /// Every (54) level name separated by newline
         /// </summary>
         internal static string LevelNames {
             get {

@@ -10,5 +10,7 @@ namespace Elma
 		byte[] Save();
 
 		ICollection<IRecord> Top10(int level);
+
+		string CalculateTotalTime(string playerName);
 	}
 }

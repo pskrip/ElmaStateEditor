@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -26,6 +25,11 @@ namespace ElmaStateEditor
 		public FormEditor()
 		{
 			InitializeComponent();
+			dataGridViewPlayers.Enabled = false;
+			dataGridViewRecords.Enabled = false;
+			dataGridViewTop10.Enabled = false;
+			Player.MaxInputLength = Info.MaxPlayerNameLength;
+			Players.MaxInputLength = Info.MaxPlayerNameLength;
 			UpdateTitleAndMenu();
 		}
 
@@ -35,9 +39,9 @@ namespace ElmaStateEditor
 				return;
 
 			var file = File.ReadAllBytes(openFileDialog1.FileName);
-			if (file.Length != Info.StateFileSize)
+			if (file.Length != Info.EmptyState.Count)
 			{
-				MessageBox.Show(@"Неверный размер файла");
+				MessageBox.Show(@"Wrong file size");
 				return;
 			}
 
@@ -53,13 +57,24 @@ namespace ElmaStateEditor
 
 		private void SaveFile()
 		{
-			Changed = false;
-
-			if (_openedFile is null || _state is null)
-				return;
-
+			SavePlayers();
 			SaveTop10();
 			File.WriteAllBytes(_openedFile, _state.Save());
+			Changed = false;
+		}
+
+		private void SavePlayers()
+		{
+			_state.Players.Clear();
+			foreach (DataGridViewRow row in dataGridViewPlayers.Rows)
+			{
+				if (!row.IsNewRow)
+				{
+					var player = Elma.Container.NewPlayer();
+					player.Name = row.Cells[0].Value as string ?? "";
+					_state.Players.Add(player);
+				}
+			}
 		}
 
 		private void DisplayPlayers()
@@ -67,43 +82,15 @@ namespace ElmaStateEditor
 			dataGridViewPlayers.CellValidating -= dataGridViewPlayers_CellValidating;
 			dataGridViewPlayers.Rows.Clear();
 			foreach (var player in _state.Players)
-			{
-				int totalHSec = 0;
-				for (int lev = 0; lev < Elma.Info.NumberOfLevels; lev++)
-				{
-					var time = _state.Top10(lev).FirstOrDefault(rec => rec.Player == player.Name);
-					if (time is null)
-					{
-						totalHSec = 0;
-						break;
-					}
-
-					totalHSec += time.Time.ToHSeconds();
-				}
-
-				string tt = "";
-				if (totalHSec > 0)
-				{
-					int hour = totalHSec / 360000;
-					totalHSec %= 360000;
-					int min = totalHSec / 6000;
-					totalHSec %= 6000;
-					int sec = totalHSec / 100;
-					int hsec = totalHSec % 100;
-					tt = $"{min:D2}:{sec:D2}.{hsec:D2}";
-					if (hour > 0)
-						tt = $"{hour}h" + tt;
-				}
-
-				dataGridViewPlayers.Rows.Add(player.Name, player.FinishedLevels, tt);
-			}
+				dataGridViewPlayers.Rows.Add(player.Name, player.FinishedLevels, _state.CalculateTotalTime(player.Name));
 			dataGridViewPlayers.CellValidating += dataGridViewPlayers_CellValidating;
+			dataGridViewPlayers.Enabled = true;
 		}
 
 		private void DisplayBestTimes()
 		{
 			dataGridViewRecords.Rows.Clear();
-			for (int lev = 0; lev < Info.NumberOfLevels; lev++)
+			for (int lev = 0; lev < _levelNames.Length; lev++)
 			{
 				var times = _state.Top10(lev).ToArray();
 				string firstTime = "";
@@ -114,7 +101,7 @@ namespace ElmaStateEditor
 				}
 				dataGridViewRecords.Rows.Add($"{lev + 1}. {_levelNames[lev]}", firstTime);
 			}
-
+			dataGridViewRecords.Enabled = true;
 			_currentLev = 0;
 		}
 
@@ -126,6 +113,7 @@ namespace ElmaStateEditor
 				dataGridViewTop10.Rows.Add(rec.Time.ToString(), rec.Player);
 			_currentLev = lev;
 			dataGridViewTop10.CellValidating += dataGridViewTop10_CellValidating;
+			dataGridViewTop10.Enabled = true;
 		}
 
 		private void SaveTop10()
@@ -154,12 +142,14 @@ namespace ElmaStateEditor
 			Text = text;
 
 			saveToolStripMenuItem.Enabled = Changed;
-			saveAsToolStripMenuItem.Enabled = _state != null;
+			removeTimesExceptBestToolStripMenuItem.Enabled = _state != null;
+			// not implemented yet
+			//saveAsToolStripMenuItem.Enabled = _state != null;
 		}
 
 		private void RenamePlayerRecords(string oldName, string newName)
 		{
-			var playerRecords = Enumerable.Range(0, Info.NumberOfLevels)
+			var playerRecords = Enumerable.Range(0, _levelNames.Length)
 				.SelectMany(lev => _state.Top10(lev))
 				.Where(rec => rec.Player == oldName);
 
@@ -176,7 +166,7 @@ namespace ElmaStateEditor
 
 		private void newToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+			// TODO
 		}
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -186,7 +176,7 @@ namespace ElmaStateEditor
 
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+			// TODO
 		}
 
 		private void dataGridViewRecords_SelectionChanged(object sender, EventArgs e)
@@ -205,7 +195,7 @@ namespace ElmaStateEditor
 				return;
 
 			var cells = dataGridViewTop10.Rows[e.RowIndex].Cells;
-			if (cells[e.ColumnIndex == 0 ? 1 : 0].Value != null)
+			if (cells[0].Value != null || cells[1].Value != null)
 				dataGridViewTop10.Sort(dataGridViewTop10.Columns[0], ListSortDirection.Ascending);
 
 			Changed = true;
@@ -223,7 +213,7 @@ namespace ElmaStateEditor
 			// validate name
 			else
 			{
-				if (e.FormattedValue.ToString().Length > 8)
+				if (e.FormattedValue.ToString().Length > Info.MaxPlayerNameLength)
 					e.Cancel = true;
 			}
 		}
@@ -256,28 +246,35 @@ namespace ElmaStateEditor
 			if (e.RowIndex == -1 || e.ColumnIndex != 0)
 				return;
 
-			var oldName = dataGridViewPlayers.Rows[e.RowIndex].Cells[e.ColumnIndex].Value as string;
+			var cells = dataGridViewPlayers.Rows[e.RowIndex].Cells;
+			var oldName = cells[0].Value as string;
 			var newName = e.FormattedValue as string;
+			var isNewRow = dataGridViewPlayers.Rows[e.RowIndex].IsNewRow;
 
-			if (newName == oldName || string.IsNullOrEmpty(newName) && string.IsNullOrEmpty(oldName))
+			// allow empty bottom row
+			if (isNewRow/* && newName == ""*/)
 				return;
 
-			// check existing player names
-			foreach(DataGridViewRow row in dataGridViewPlayers.Rows)
+			if (newName == oldName)
+				return;
+
+			// check for same existing player name
+			foreach (DataGridViewRow row in dataGridViewPlayers.Rows)
 			{
-				if (row.Index != e.RowIndex && row.Cells[0].Value as string == newName)
+				if (row.Index != e.RowIndex && !row.IsNewRow
+					&& (row.Cells[0].Value as string ?? "") == newName)
 				{
 					e.Cancel = true;
 					return;
 				}
 			}
 
+			if (cells[1].Value is null)
+				cells[1].Value = _levelNames.Length;
+
 			// rename player
 			if (oldName != null)
 			{
-				var oldPlayer = _state.Players.FirstOrDefault(player => player.Name == oldName);
-				if (oldPlayer != null)
-					oldPlayer.Name = newName;
 				RenamePlayerRecords(oldName, newName);
 				DisplayBestTimes();
 			}
@@ -285,22 +282,45 @@ namespace ElmaStateEditor
 			Changed = true;
 		}
 
-		private void dataGridViewPlayers_UserAddedRow(object sender, DataGridViewRowEventArgs e)
+		private void dataGridViewPlayers_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
 		{
-			Changed = true;
-		}
+			var name = e.Row.Cells[0].Value as string ?? "";
+			int times = Enumerable.Range(0, _levelNames.Length)
+				.SelectMany(lev => _state.Top10(lev))
+				.Count(rec => rec.Player == name);
 
-		private void dataGridViewPlayers_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
-		{
-			Changed = true;
+			if (times == 0)
+			{
+				Changed = true;
+				return;
+			}
+
+			switch (MessageBox.Show(
+				@$"Player '{name}' has {times} records. Do you want to remove them'?",
+				"Remove records",
+				MessageBoxButtons.YesNoCancel))
+			{
+				case DialogResult.Cancel:
+					e.Cancel = true;
+					break;
+				case DialogResult.No:
+					Changed = true;
+					break;
+				case DialogResult.Yes:
+					foreach (var top10 in Enumerable.Range(0, _levelNames.Length).Select(lev => _state.Top10(lev)))
+						foreach (var rec in top10.Where(rec => rec.Player == name).ToList())
+							top10.Remove(rec);
+
+					DisplayBestTimes();
+					Changed = true;
+					break;
+			}
 		}
 
 		private void removeTimesExceptBestToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (_state is null)
-				return;
 			bool changed = false;
-			foreach(var lev in Enumerable.Range(0, Info.NumberOfLevels))
+			foreach (var lev in Enumerable.Range(0, _levelNames.Length))
 			{
 				var top10 = _state.Top10(lev);
 				changed |= top10.Count > 1;

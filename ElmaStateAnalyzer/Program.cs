@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace ElmaStateEditor
+namespace ElmaStateAnalyzer
 {
     static class Program
     {

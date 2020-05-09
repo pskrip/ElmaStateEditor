@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using Elma.Properties;
 
 namespace Elma
 {
 	public static class Info
 	{
-		public static int NumberOfLevels = State.NumberOfLevels;
+		public static string[] LevelNames =>
+			Resources.LevelNames.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
 
-		public static IEnumerable<string> LevelNames =>
-			Properties.Resources.LevelNames.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+		public static IReadOnlyCollection<byte> EmptyState => Resources.EmptyState;
 
-		public const int StateFileSize = State.StateSize;
+		public const int MaxPlayerNameLength = State.MaxNameLength;
 	}
 }

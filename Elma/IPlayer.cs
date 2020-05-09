@@ -6,7 +6,7 @@ namespace Elma
 	{
 		string Name { get; set; }
 		int FinishedLevels { get; }
-		IEnumerable<int> SkippedLevels { get; }
+		IReadOnlyCollection<int> SkippedLevels { get; }
 		void UnlockAllLevels();
 	}
 }

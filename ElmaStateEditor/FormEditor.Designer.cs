@@ -34,6 +34,8 @@
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
+			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.removeTimesExceptBestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
 			this.dataGridViewRecords = new System.Windows.Forms.DataGridView();
 			this.Level = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -47,8 +49,6 @@
 			this.Players = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Unlocked = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.TotalTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.removeTimesExceptBestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridViewRecords)).BeginInit();
@@ -77,6 +77,7 @@
 			// 
 			// newToolStripMenuItem
 			// 
+			this.newToolStripMenuItem.Enabled = false;
 			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
 			this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
 			this.newToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
@@ -101,6 +102,7 @@
 			// 
 			// saveAsToolStripMenuItem
 			// 
+			this.saveAsToolStripMenuItem.Enabled = false;
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
 			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
@@ -117,6 +119,21 @@
 			this.menuStrip.Name = "menuStrip";
 			this.menuStrip.Size = new System.Drawing.Size(981, 24);
 			this.menuStrip.TabIndex = 0;
+			// 
+			// editToolStripMenuItem
+			// 
+			this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.removeTimesExceptBestToolStripMenuItem});
+			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+			this.editToolStripMenuItem.Text = "Edit";
+			// 
+			// removeTimesExceptBestToolStripMenuItem
+			// 
+			this.removeTimesExceptBestToolStripMenuItem.Name = "removeTimesExceptBestToolStripMenuItem";
+			this.removeTimesExceptBestToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+			this.removeTimesExceptBestToolStripMenuItem.Text = "Remove times except best";
+			this.removeTimesExceptBestToolStripMenuItem.Click += new System.EventHandler(this.removeTimesExceptBestToolStripMenuItem_Click);
 			// 
 			// openFileDialog1
 			// 
@@ -251,8 +268,7 @@
 			this.dataGridViewPlayers.Size = new System.Drawing.Size(981, 135);
 			this.dataGridViewPlayers.TabIndex = 0;
 			this.dataGridViewPlayers.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridViewPlayers_CellValidating);
-			this.dataGridViewPlayers.UserAddedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.dataGridViewPlayers_UserAddedRow);
-			this.dataGridViewPlayers.UserDeletedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.dataGridViewPlayers_UserDeletedRow);
+			this.dataGridViewPlayers.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dataGridViewPlayers_UserDeletingRow);
 			// 
 			// Players
 			// 
@@ -275,21 +291,6 @@
 			this.TotalTime.HeaderText = "Total time";
 			this.TotalTime.Name = "TotalTime";
 			this.TotalTime.ReadOnly = true;
-			// 
-			// editToolStripMenuItem
-			// 
-			this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.removeTimesExceptBestToolStripMenuItem});
-			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
-			this.editToolStripMenuItem.Text = "Edit";
-			// 
-			// removeTimesExceptBestToolStripMenuItem
-			// 
-			this.removeTimesExceptBestToolStripMenuItem.Name = "removeTimesExceptBestToolStripMenuItem";
-			this.removeTimesExceptBestToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
-			this.removeTimesExceptBestToolStripMenuItem.Text = "Remove times except best";
-			this.removeTimesExceptBestToolStripMenuItem.Click += new System.EventHandler(this.removeTimesExceptBestToolStripMenuItem_Click);
 			// 
 			// FormEditor
 			// 

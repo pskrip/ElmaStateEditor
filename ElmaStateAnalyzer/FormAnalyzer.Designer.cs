@@ -1,4 +1,4 @@
-﻿namespace ElmaStateEditor
+﻿namespace ElmaStateAnalyzer
 {
     partial class FormAnalyzer
     {

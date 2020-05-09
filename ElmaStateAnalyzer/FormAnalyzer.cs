@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
-namespace ElmaStateEditor
+namespace ElmaStateAnalyzer
 {
     public partial class FormAnalyzer : Form
     {
@@ -16,15 +16,7 @@ namespace ElmaStateEditor
         public FormAnalyzer()
         {
             InitializeComponent();
-            try
-            {
-                _emptyState = File.ReadAllBytes(@"empty.dat");
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(@"Не удается найти empty.dat");
-                Load += (sender, args) => Close();
-            }
+            _emptyState = Elma.Info.EmptyState.ToArray();
         }
 
         private void buttonFile_Click(object sender, EventArgs e)
@@ -35,7 +27,7 @@ namespace ElmaStateEditor
             var file = File.ReadAllBytes(openFileDialog1.FileName);
             if (file.Length != _emptyState.Length)
             {
-                MessageBox.Show(@"Неверный размер файла");
+                MessageBox.Show(@"Wrong file size");
                 return;
             }
 
@@ -64,13 +56,14 @@ namespace ElmaStateEditor
 
         private IEnumerable<(int pos, List<byte> bytes)> GroupDiffBytes(IEnumerable<(byte b, int pos)> diffs)
         {
-            if (!diffs.Any())
+	        var diffData = diffs.ToArray();
+	        if (!diffData.Any())
                 yield break;
 
-            int prev = diffs.First().pos;
-            var group = new List<byte> { diffs.First().b };
+            int prev = diffData.First().pos;
+            var group = new List<byte> { diffData.First().b };
 
-            foreach (var (b, pos) in diffs.Skip(1))
+            foreach (var (b, pos) in diffData.Skip(1))
             {
                 if (pos == prev + 1)
                 {
@@ -90,14 +83,15 @@ namespace ElmaStateEditor
 
         private IEnumerable<(int pos, List<byte> bytes1, List<byte> bytes2)> GroupDiffBytes(IEnumerable<(int pos, byte b1, byte b2)> diffs)
         {
-            if (!diffs.Any())
+	        var diffData = diffs.ToArray();
+	        if (!diffData.Any())
                 yield break;
 
-            int prev = diffs.First().pos;
-            var group1 = new List<byte> { diffs.First().b1 };
-            var group2 = new List<byte> { diffs.First().b2 };
+            int prev = diffData.First().pos;
+            var group1 = new List<byte> { diffData.First().b1 };
+            var group2 = new List<byte> { diffData.First().b2 };
 
-            foreach (var (pos, b1, b2) in diffs.Skip(1))
+            foreach (var (pos, b1, b2) in diffData.Skip(1))
             {
                 if (pos == prev + 1)
                 {
@@ -117,7 +111,7 @@ namespace ElmaStateEditor
             yield return (prev - group1.Count + 1, group1, group2);
         }
 
-        private string CharsToString(List<byte> chars)
+        private static string CharsToString(List<byte> chars)
         {
             return string.Join("", chars.Select(c => (char)c).Select(c => char.IsControl(c) ? '?' : c));
         }

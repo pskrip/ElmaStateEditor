@@ -1,27 +1,23 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Elma
 {
 	internal class Player : IPlayer
 	{
-		private List<int> _skippedLevels;
 		internal int OpenedLevels;
 
-		public Player() => _skippedLevels = new List<int>();
+		// Unlocking internals by default
+		public Player() => UnlockAllLevels();
 
 		public string Name { get; set; }
-		public int FinishedLevels => OpenedLevels - _skippedLevels.Count;
-		public IEnumerable<int> SkippedLevels
-		{
-			get => _skippedLevels;
-			internal set => _skippedLevels = value.ToList();
-		}
-
+		public int FinishedLevels => OpenedLevels - SkippedLevels.Count;
+		public IReadOnlyCollection<int> SkippedLevels { get; internal set; }
 		public void UnlockAllLevels()
 		{
 			OpenedLevels = State.NumberOfLevels;
-			_skippedLevels.Clear();
+			SkippedLevels = new List<int>();
 		}
 	}
 }
